@@ -1,6 +1,6 @@
 import { Tabs } from 'expo-router'
-import { colors } from '../../constants/colors'
 import { FontAwesome, Entypo } from '@expo/vector-icons'
+import { colors } from '../../constants/styles'
 
 function TabBarIcon(props: {
 	name: React.ComponentProps<typeof FontAwesome>['name']

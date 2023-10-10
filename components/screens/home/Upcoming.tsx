@@ -1,9 +1,10 @@
-import { Text, FlatList } from 'react-native'
-import { globalStyles } from '../../../constants/styles'
+import { Text, FlatList, StyleSheet } from 'react-native'
+import { globalStyles, margins } from '../../../constants/styles'
 import HorizontalCard from '../../HorizontalCard'
 import { useEffect, useState } from 'react'
 import { IMovie } from '../../../constants/types'
 import axios from 'axios'
+import { heightPercentageToDP as hp } from 'react-native-responsive-screen'
 
 const fetchUpcomingMovies = async () => {
 	try {
@@ -44,12 +45,17 @@ export default function Upcoming() {
 					/>
 				)}
 				showsHorizontalScrollIndicator={false}
-				contentContainerStyle={{
-					gap: 12,
-					marginHorizontal: 24,
-					paddingRight: 44,
-				}}
+				contentContainerStyle={styles.flatListContainer}
 			/>
 		</>
 	)
 }
+
+const styles = StyleSheet.create({
+	flatListContainer: {
+		gap: 12,
+		marginHorizontal: margins.side,
+		paddingRight: 40,
+		height: hp(26),
+	},
+})

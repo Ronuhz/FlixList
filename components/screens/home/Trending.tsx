@@ -1,9 +1,10 @@
-import { Text, FlatList } from 'react-native'
-import { globalStyles } from '../../../constants/styles'
+import { Text, FlatList, StyleSheet, Platform } from 'react-native'
+import { globalStyles, margins } from '../../../constants/styles'
 import BigCard from '../../BigCard'
 import { IMovie } from '../../../constants/types'
 import axios from 'axios'
 import { useEffect, useState } from 'react'
+import { heightPercentageToDP as hp } from 'react-native-responsive-screen'
 
 const fetchTrendingMovies = async () => {
 	try {
@@ -44,15 +45,22 @@ export default function Trending() {
 						index={index}
 						title={item.title}
 						poster={item.poster_path}
+						id={item.id}
 					/>
 				)}
-				contentContainerStyle={{
-					gap: 12,
-					marginHorizontal: 24,
-					paddingRight: 44,
-				}}
+				contentContainerStyle={styles.flatListContainer}
 				showsHorizontalScrollIndicator={false}
 			/>
 		</>
 	)
 }
+
+const styles = StyleSheet.create({
+	flatListContainer: {
+		gap: 12,
+		marginHorizontal: margins.side,
+		paddingRight: 40,
+		height: Platform.OS === 'ios' ? hp(40) : hp(45),
+		paddingTop: Platform.OS === 'ios' ? 2.5 : 0, //fixes card overflow on IOS
+	},
+})

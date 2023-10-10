@@ -1,8 +1,8 @@
-import { View, Image, Text, StyleSheet } from 'react-native'
+import { memo } from 'react'
+import { Image, Text, StyleSheet, View } from 'react-native'
 import { BlurView } from 'expo-blur'
 import { heightPercentageToDP as hp } from 'react-native-responsive-screen'
-import { colors } from '../constants/colors'
-import Animated, { FadeIn } from 'react-native-reanimated'
+import { colors } from '../constants/styles'
 
 interface Props {
 	index: number
@@ -11,14 +11,9 @@ interface Props {
 	releaseDate: string
 }
 
-export default function HorizontalCard({
-	index,
-	title,
-	poster,
-	releaseDate,
-}: Props) {
+function HorizontalCard({ index, title, poster, releaseDate }: Props) {
 	return (
-		<Animated.View style={styles.card} entering={FadeIn.delay(index * 80)}>
+		<View style={styles.card}>
 			<Image
 				style={styles.cardImage}
 				source={{
@@ -32,9 +27,11 @@ export default function HorizontalCard({
 			<BlurView style={styles.releaseDateContainer} tint='dark'>
 				<Text style={styles.releaseDate}>Release: {releaseDate}</Text>
 			</BlurView>
-		</Animated.View>
+		</View>
 	)
 }
+
+export default memo(HorizontalCard)
 
 const styles = StyleSheet.create({
 	card: {

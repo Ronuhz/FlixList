@@ -1,35 +1,39 @@
+import { memo } from 'react'
 import { BlurView } from 'expo-blur'
-import { View, Text, StyleSheet, Image } from 'react-native'
+import { Text, StyleSheet, Image, View, Platform } from 'react-native'
 import { heightPercentageToDP as hp } from 'react-native-responsive-screen'
-import Animated, { FadeIn } from 'react-native-reanimated'
-import { colors } from '../constants/colors'
+import { Link } from 'expo-router'
+import { colors } from '../constants/styles'
 
 interface Props {
 	index: number
 	title: string
 	poster: string
+	id: number
 }
 
-const BigCard = ({ index, title, poster }: Props) => {
+const BigCard = ({ index, title, poster, id }: Props) => {
 	return (
-		<Animated.View style={styles.card} entering={FadeIn.delay(index * 80)}>
-			<Image
-				style={styles.cardImage}
-				source={{
-					uri: `https://image.tmdb.org/t/p/w400/${poster}`,
-				}}
-			/>
-			<BlurView style={styles.titleContainer} tint='dark'>
-				<Text style={styles.title}>{title}</Text>
-			</BlurView>
-		</Animated.View>
+		<Link href={{ pathname: '/[id]', params: { id } }}>
+			<View style={styles.card}>
+				<Image
+					style={styles.cardImage}
+					source={{
+						uri: `https://image.tmdb.org/t/p/w400/${poster}`,
+					}}
+				/>
+				<BlurView style={styles.titleContainer} tint='dark'>
+					<Text style={styles.title}>{title}</Text>
+				</BlurView>
+			</View>
+		</Link>
 	)
 }
 
 const styles = StyleSheet.create({
 	card: {
-		width: hp(26),
-		height: hp(40),
+		width: Platform.OS === 'ios' ? hp(26) : hp(30),
+		height: Platform.OS === 'ios' ? hp(40) : hp(45),
 	},
 	cardImage: {
 		flex: 1,
@@ -53,4 +57,4 @@ const styles = StyleSheet.create({
 	},
 })
 
-export default BigCard
+export default memo(BigCard)

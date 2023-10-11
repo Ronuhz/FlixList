@@ -7,12 +7,13 @@ import {
 	LayoutChangeEvent,
 } from 'react-native'
 import { colors, margins } from '../../../constants/styles'
-import { SetStateAction, useCallback, useState } from 'react'
+import { SetStateAction, useCallback, useContext, useState } from 'react'
 import Animated, {
 	useAnimatedStyle,
 	useSharedValue,
 	withTiming,
 } from 'react-native-reanimated'
+import { DiscoverContext } from '../../../contexts/discover'
 
 const CATEGORIES = ['All', 'Movies', 'Tv Series']
 
@@ -57,8 +58,8 @@ interface TabLayout {
 
 const CategorySelector = () => {
 	const [activeCategory, setActiveCategory] = useState('All')
-	const translateValue = useSharedValue(0)
 	const [tabLayouts, setTabLayouts] = useState<TabLayout[]>([])
+	const { setCategory } = useContext(DiscoverContext)
 
 	const animatedStyle = useAnimatedStyle(() => {
 		const layout = tabLayouts.find((layout) => layout.tab === activeCategory)
@@ -70,6 +71,7 @@ const CategorySelector = () => {
 
 	const onTabPress = useCallback((tab: string) => {
 		setActiveCategory(tab)
+		setCategory(tab)
 	}, [])
 
 	const onLayout = useCallback((event: LayoutChangeEvent, tab: string) => {

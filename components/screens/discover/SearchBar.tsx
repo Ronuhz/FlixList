@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useContext } from 'react'
 import {
 	TextInput,
 	View,
@@ -11,6 +11,7 @@ import { Feather } from '@expo/vector-icons'
 import fetchSearchedMovies from './fetchSearchedMovies'
 import { colors, margins } from '../../../constants/styles'
 import CategorySelector from './CategorySelector'
+import { DiscoverContext } from '../../../contexts/discover'
 
 interface Props {
 	query: string
@@ -19,6 +20,7 @@ interface Props {
 }
 
 export default function SearchBar({ query, setQuery, setMovies }: Props) {
+	const { category } = useContext(DiscoverContext)
 	const [loading, setLoading] = useState(false)
 
 	// Debouncing search
@@ -26,7 +28,7 @@ export default function SearchBar({ query, setQuery, setMovies }: Props) {
 		const timeoutId = setTimeout(() => {
 			setLoading(true)
 			setMovies([])
-			fetchSearchedMovies(query, 1)
+			fetchSearchedMovies(query, 1, category)
 				.then((movies: IOMDBMovie[]) => {
 					setMovies(movies)
 					setLoading(false)
@@ -37,7 +39,7 @@ export default function SearchBar({ query, setQuery, setMovies }: Props) {
 		}, 500)
 
 		return () => clearTimeout(timeoutId)
-	}, [query])
+	}, [query, category])
 
 	return (
 		<>
@@ -47,7 +49,7 @@ export default function SearchBar({ query, setQuery, setMovies }: Props) {
 					style={styles.searchBarInput}
 					value={query}
 					onChangeText={setQuery}
-					placeholder='Sherlock Holmes'
+					placeholder='Search for something...'
 					placeholderTextColor='#BBB'
 				/>
 			</View>

@@ -17,7 +17,7 @@ export default function MovieCard({ item, index }: Props) {
 		<View
 			style={[
 				style.container,
-				{ paddingLeft: isEven ? 0 : 8, paddingRight: isEven ? 8 : 0 },
+				{ paddingLeft: isEven ? 0 : 6, paddingRight: isEven ? 6 : 0 },
 			]}
 		>
 			<Image

@@ -39,9 +39,7 @@ export default function TabLayout() {
 				name='discover'
 				options={{
 					headerShown: false,
-					tabBarIcon: ({ color }) => (
-						<TabBarIcon name='play-circle' color={color} />
-					),
+					tabBarIcon: ({ color }) => <TabBarIcon name='search' color={color} />,
 				}}
 			/>
 			<Tabs.Screen

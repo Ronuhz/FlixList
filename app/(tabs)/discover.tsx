@@ -1,6 +1,6 @@
 import { Text, StyleSheet, Platform, SafeAreaView } from 'react-native'
 import { colors, globalStyles, margins } from '../../constants/styles'
-import { useState, useContext } from 'react'
+import { useState, useContext, useEffect } from 'react'
 import { IOMDBMovie } from '../../constants/types'
 import SearchBar from '../../components/screens/discover/SearchBar'
 import fetchSearchedMovies from '../../components/screens/discover/fetchSearchedMovies'
@@ -13,12 +13,13 @@ function DiscoverScreen() {
 	const [page, setPage] = useState(2)
 	const [query, setQuery] = useState('Avengers')
 	const [movies, setMovies] = useState<IOMDBMovie[]>([])
+	const [category, setCategory] = useState('All')
 
-	const fetchMoreMovie = () => {
+	const fetchMoreMovies = () => {
 		if (loading) return
 
 		setLoading(true)
-		fetchSearchedMovies(query, page).then((movies: IOMDBMovie[]) => {
+		fetchSearchedMovies(query, page, category).then((movies: IOMDBMovie[]) => {
 			setLoading(false)
 
 			if (!movies || movies.length === 0) return
@@ -28,28 +29,35 @@ function DiscoverScreen() {
 		})
 	}
 
-	return (
-		<SafeAreaView style={styles.container}>
-			<Text style={[globalStyles.sectionTitle, styles.title]}>
-				Find Movies, Tv series, and more..
-			</Text>
-			<SearchBar query={query} setQuery={setQuery} setMovies={setMovies} />
+	//reset page when changing category
+	useEffect(() => {
+		setPage(2)
+	}, [category])
 
-			{!movies || (
-				<MasonryList
-					data={movies}
-					numColumns={2}
-					showsVerticalScrollIndicator={false}
-					contentContainerStyle={styles.masonryListContainer}
-					renderItem={({ item, i }) => (
-						<MovieCard index={i} item={item as IOMDBMovie} />
-					)}
-					onEndReachedThreshold={0.1}
-					onEndReached={fetchMoreMovie}
-					refreshControl={false}
-				/>
-			)}
-		</SafeAreaView>
+	return (
+		<DiscoverContext.Provider value={{ category, setCategory }}>
+			<SafeAreaView style={styles.container}>
+				<Text style={[globalStyles.sectionTitle, styles.title]}>
+					Find Movies, Tv series, and more..
+				</Text>
+				<SearchBar query={query} setQuery={setQuery} setMovies={setMovies} />
+
+				{!movies || (
+					<MasonryList
+						data={movies}
+						numColumns={2}
+						showsVerticalScrollIndicator={false}
+						contentContainerStyle={styles.masonryListContainer}
+						renderItem={({ item, i }) => (
+							<MovieCard index={i} item={item as IOMDBMovie} />
+						)}
+						onEndReachedThreshold={0.1}
+						onEndReached={fetchMoreMovies}
+						refreshControl={false}
+					/>
+				)}
+			</SafeAreaView>
+		</DiscoverContext.Provider>
 	)
 }
 

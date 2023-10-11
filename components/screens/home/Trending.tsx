@@ -1,10 +1,11 @@
-import { Text, FlatList, StyleSheet, Platform } from 'react-native'
+import { Text, StyleSheet, Platform, Dimensions } from 'react-native'
 import { globalStyles, margins } from '../../../constants/styles'
 import BigCard from '../../BigCard'
 import { IMovie } from '../../../constants/types'
 import axios from 'axios'
 import { useEffect, useState } from 'react'
 import { heightPercentageToDP as hp } from 'react-native-responsive-screen'
+import { FlatList } from 'react-native-gesture-handler'
 
 const fetchTrendingMovies = async () => {
 	try {

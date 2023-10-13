@@ -1,77 +1,38 @@
-import {
-	StyleSheet,
-	SafeAreaView,
-	Platform,
-	Text,
-	View,
-	Image,
-	Pressable,
-} from 'react-native'
-import Upcoming from '../../components/screens/home/Upcoming'
-import Trending from '../../components/screens/home/Trending'
-import { colors, globalStyles, margins } from '../../constants/styles'
-import { FlatList } from 'react-native-gesture-handler'
-import { trendingData } from '../../constants/data'
-import {
-	widthPercentageToDP as wp,
-	heightPercentageToDP as hp,
-} from 'react-native-responsive-screen'
-import { getMovieGenreById } from '../../utils'
+import { StyleSheet, SafeAreaView, Platform } from 'react-native'
+import { colors } from '../../constants/styles'
+import usePopular from '../../components/screens/home/usePopularMovies'
+import { useCallback, useState } from 'react'
+import { RefreshControl, ScrollView } from 'react-native-gesture-handler'
+import useTvShows from '../../components/screens/home/useTvShows'
+import useOnTheAirTvShows from '../../components/screens/home/useOnTheAirTvShows'
 
 export default function HomeScreen() {
+	const [refreshing, setRefreshing] = useState(false)
+	const { PopularMovies, fetchPopularMovies } = usePopular()
+	const { TvShows, fetchTvShows } = useTvShows()
+	const { OnTheAirTvShows, fetchOnTheAirTvShows } = useOnTheAirTvShows()
+
+	const onRefresh = useCallback(() => {
+		setRefreshing(true)
+		fetchPopularMovies().finally(() =>
+			fetchTvShows().finally(() =>
+				fetchOnTheAirTvShows().finally(() => setRefreshing(false))
+			)
+		)
+	}, [])
+
 	return (
 		<SafeAreaView style={styles.container}>
-			<Text style={globalStyles.sectionTitle}>Popular movies</Text>
-			<FlatList
-				horizontal
-				showsHorizontalScrollIndicator={false}
-				data={trendingData}
-				keyExtractor={(item) => item.id.toString()}
-				contentContainerStyle={{
-					marginHorizontal: margins.side,
-					gap: 10,
-					paddingRight: 38,
-				}}
-				renderItem={({ item, index }) => (
-					<Pressable style={{ gap: 6 }}>
-						<Image
-							style={{
-								backgroundColor: colors.placeholder,
-								borderRadius: 20,
-								width: wp(85),
-								height: hp(23),
-							}}
-							resizeMode='cover'
-							source={{
-								uri: `https://image.tmdb.org/t/p/original/${item.backdrop_path}`,
-							}}
-						/>
-						<Text
-							style={{
-								color: '#fff',
-								fontFamily: 'Lato-Regular',
-								fontSize: hp(2.3),
-								fontWeight: '600',
-								marginLeft: 2,
-							}}
-						>
-							{item.title}
-						</Text>
-						<Text
-							style={{
-								color: colors.mutedForeground,
-								fontFamily: 'Lato-Regular',
-								fontSize: hp(1.5),
-								marginLeft: 2,
-							}}
-						>
-							{getMovieGenreById(item.genre_ids)}
-						</Text>
-					</Pressable>
-				)}
-			/>
-			{/* <Upcoming />
-			<Trending /> */}
+			<ScrollView
+				showsVerticalScrollIndicator={false}
+				refreshControl={
+					<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+				}
+			>
+				{PopularMovies}
+				{OnTheAirTvShows}
+				{TvShows}
+			</ScrollView>
 		</SafeAreaView>
 	)
 }

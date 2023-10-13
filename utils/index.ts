@@ -75,6 +75,9 @@ export function getTVShowGenreById(genreIds: number[]): string {
 		const genre = genreMap[id]
 		if (genre) {
 			genres.push(genre)
+			if (genres.length >= 3) {
+				break // Stop after collecting the first 3 genres
+			}
 		}
 	}
 

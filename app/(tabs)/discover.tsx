@@ -11,7 +11,7 @@ import { DiscoverContext } from '../../contexts/discover'
 function DiscoverScreen() {
 	const [loading, setLoading] = useState(false)
 	const [page, setPage] = useState(2)
-	const [query, setQuery] = useState('Avengers')
+	const [query, setQuery] = useState('')
 	const [movies, setMovies] = useState<IOMDBMovie[]>([])
 	const [category, setCategory] = useState('All')
 

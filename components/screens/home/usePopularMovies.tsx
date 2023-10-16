@@ -1,11 +1,4 @@
-import {
-	Text,
-	FlatList,
-	Pressable,
-	Image,
-	StyleSheet,
-	View,
-} from 'react-native'
+import { Text, FlatList, Image, StyleSheet, View } from 'react-native'
 import { colors, globalStyles, margins } from '../../../constants/styles'
 import {
 	widthPercentageToDP as wp,
@@ -16,6 +9,7 @@ import axios from 'axios'
 import { useCallback, useEffect, useState } from 'react'
 import { IMovie } from '../../../constants/types'
 import { Link } from 'expo-router'
+import Animated from 'react-native-reanimated'
 
 function usePopularMovies() {
 	const [movies, setMovies] = useState<IMovie[]>([])
@@ -52,26 +46,39 @@ function usePopularMovies() {
 				data={movies}
 				keyExtractor={(item) => item.id.toString()}
 				contentContainerStyle={styles.flatListContainer}
-				renderItem={({ item, index }) => (
-					<Link
-						href={{ pathname: '/[id]', params: { id: item.id } }}
-						style={{ gap: 6 }}
-					>
-						<View>
-							<Image
-								style={styles.backdropImage}
-								resizeMode='cover'
-								source={{
-									uri: `https://image.tmdb.org/t/p/original/${item.backdrop_path}`,
-								}}
-							/>
-							<Text style={styles.title}>{item.title}</Text>
-							<Text style={styles.genres}>
-								{getMovieGenreById(item.genre_ids)}
-							</Text>
-						</View>
-					</Link>
-				)}
+				renderItem={({ item, index }) => {
+					const title =
+						item.title.length > 35
+							? item.title.slice(0, 35) + '...'
+							: item.title
+
+					return (
+						<Link
+							href={{
+								pathname: '/[movieID]',
+								params: {
+									movieID: item.id,
+									poster: item.backdrop_path,
+								},
+							}}
+							style={{ gap: 6 }}
+						>
+							<View>
+								<Image
+									style={styles.backdropImage}
+									resizeMode='cover'
+									source={{
+										uri: `https://image.tmdb.org/t/p/original/${item.backdrop_path}`,
+									}}
+								/>
+								<Text style={styles.title}>{title}</Text>
+								<Text style={styles.genres}>
+									{getMovieGenreById(item.genre_ids)}
+								</Text>
+							</View>
+						</Link>
+					)
+				}}
 			/>
 		</>
 	)
@@ -86,6 +93,7 @@ const styles = StyleSheet.create({
 		marginHorizontal: margins.side,
 		gap: 10,
 		paddingRight: 38,
+		paddingTop: 3,
 	},
 	backdropImage: {
 		backgroundColor: colors.placeholder,

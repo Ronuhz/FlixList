@@ -57,7 +57,13 @@ function useTvShows() {
 
 					return (
 						<Link
-							href={{ pathname: '/[id]', params: { id: item.id } }}
+							href={{
+								pathname: '/[id]',
+								params: {
+									id: item.id,
+									poster: item.backdrop_path,
+								},
+							}}
 							style={{ gap: 6 }}
 						>
 							<View style={{ gap: 6 }}>
@@ -88,6 +94,7 @@ const styles = StyleSheet.create({
 		marginHorizontal: margins.side,
 		gap: 10,
 		paddingRight: 38,
+		paddingTop: 3,
 	},
 	coverImage: {
 		height: hp(20),

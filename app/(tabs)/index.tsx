@@ -1,24 +1,21 @@
 import { StyleSheet, SafeAreaView, Platform } from 'react-native'
 import { colors } from '../../constants/styles'
-import usePopular from '../../components/screens/home/usePopularMovies'
 import { useCallback, useState } from 'react'
 import { RefreshControl, ScrollView } from 'react-native-gesture-handler'
-import useTvShows from '../../components/screens/home/useTvShows'
-import useOnTheAirTvShows from '../../components/screens/home/useOnTheAirTvShows'
+import PopularMovies from '../../components/screens/home/PopularMovies'
+import { useQueryClient } from '@tanstack/react-query'
+import OnTheAirTvShows from '../../components/screens/home/OnTheAirTvShows'
+import TvShows from '../../components/screens/home/TvShows'
 
 export default function HomeScreen() {
 	const [refreshing, setRefreshing] = useState(false)
-	const { PopularMovies, fetchPopularMovies } = usePopular()
-	const { TvShows, fetchTvShows } = useTvShows()
-	const { OnTheAirTvShows, fetchOnTheAirTvShows } = useOnTheAirTvShows()
+	const queryClient = useQueryClient()
 
-	const onRefresh = useCallback(() => {
+	const onRefresh = useCallback(async () => {
 		setRefreshing(true)
-		fetchPopularMovies().finally(() =>
-			fetchTvShows().finally(() =>
-				fetchOnTheAirTvShows().finally(() => setRefreshing(false))
-			)
-		)
+		await queryClient
+			.invalidateQueries({ queryKey: ['home'] })
+			.finally(() => setRefreshing(false))
 	}, [])
 
 	return (
@@ -29,9 +26,9 @@ export default function HomeScreen() {
 					<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
 				}
 			>
-				{PopularMovies}
-				{OnTheAirTvShows}
-				{TvShows}
+				<PopularMovies />
+				<OnTheAirTvShows />
+				<TvShows />
 			</ScrollView>
 		</SafeAreaView>
 	)

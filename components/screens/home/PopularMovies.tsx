@@ -1,4 +1,11 @@
-import { Text, FlatList, Image, StyleSheet, View } from 'react-native'
+import {
+	Text,
+	FlatList,
+	Image,
+	StyleSheet,
+	View,
+	ActivityIndicator,
+} from 'react-native'
 import { colors, globalStyles, margins } from '../../../constants/styles'
 import {
 	widthPercentageToDP as wp,
@@ -6,45 +13,48 @@ import {
 } from 'react-native-responsive-screen'
 import { getMovieGenreById } from '../../../utils'
 import axios from 'axios'
-import { useCallback, useEffect, useState } from 'react'
 import { IMovie } from '../../../constants/types'
 import { Link } from 'expo-router'
-import Animated from 'react-native-reanimated'
+import { useQuery } from '@tanstack/react-query'
 
-function usePopularMovies() {
-	const [movies, setMovies] = useState<IMovie[]>([])
-
-	const fetchPopularMovies = useCallback(async () => {
-		try {
-			const response = await axios.get(
-				'https://api.themoviedb.org/3/movie/popular',
-				{
-					headers: {
-						Authorization: process.env.EXPO_PUBLIC_API_KEY,
-					},
-				}
-			)
-			console.log('Fetched trending movies')
-			return response.data.results
-		} catch (error) {
-			console.error('Error fetching trending movies: ', error)
-		}
-	}, [])
-
-	useEffect(() => {
-		fetchPopularMovies().then((trendingMovies: IMovie[]) =>
-			setMovies(trendingMovies)
+const fetchPopularMovies = async (signal: AbortSignal) => {
+	await new Promise((resolve) => setTimeout(resolve, 2000))
+	try {
+		const response = await axios.get(
+			'https://api.themoviedb.org/3/movie/popular',
+			{
+				signal,
+				headers: {
+					Authorization: process.env.EXPO_PUBLIC_API_KEY,
+				},
+			}
 		)
-	}, [])
+		console.log('Fetched trending movies')
+		return response.data.results
+	} catch (error) {
+		console.error('Error fetching trending movies: ', error)
+	}
+}
 
-	const PopularMovies = (
+function PopularMovies() {
+	const { isLoading, data } = useQuery({
+		queryKey: ['home', 'popularMovies'],
+		queryFn: ({ signal }) => fetchPopularMovies(signal),
+	})
+
+	return (
 		<>
 			<Text style={globalStyles.sectionTitle}>Popular movies</Text>
+			{isLoading && (
+				<View style={{ marginVertical: hp(1.5) }}>
+					<ActivityIndicator />
+				</View>
+			)}
 			<FlatList
 				horizontal
 				showsHorizontalScrollIndicator={false}
-				data={movies}
-				keyExtractor={(item) => item.id.toString()}
+				data={data}
+				keyExtractor={(item: IMovie) => item.id.toString()}
 				contentContainerStyle={styles.flatListContainer}
 				renderItem={({ item, index }) => {
 					const title =
@@ -58,7 +68,7 @@ function usePopularMovies() {
 								pathname: '/[movieID]',
 								params: {
 									movieID: item.id,
-									poster: item.backdrop_path,
+									poster: item.poster_path,
 								},
 							}}
 							style={{ gap: 6 }}
@@ -68,7 +78,7 @@ function usePopularMovies() {
 									style={styles.backdropImage}
 									resizeMode='cover'
 									source={{
-										uri: `https://image.tmdb.org/t/p/original/${item.backdrop_path}`,
+										uri: `https://image.tmdb.org/t/p/w500/${item.backdrop_path}`,
 									}}
 								/>
 								<Text style={styles.title}>{title}</Text>
@@ -82,11 +92,9 @@ function usePopularMovies() {
 			/>
 		</>
 	)
-
-	return { PopularMovies, fetchPopularMovies }
 }
 
-export default usePopularMovies
+export default PopularMovies
 
 const styles = StyleSheet.create({
 	flatListContainer: {

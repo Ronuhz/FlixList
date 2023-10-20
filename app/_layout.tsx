@@ -3,6 +3,7 @@ import { useFonts } from 'expo-font'
 import * as SplashScreen from 'expo-splash-screen'
 import { useEffect } from 'react'
 import { DarkTheme, ThemeProvider } from '@react-navigation/native'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 
 export {
 	// Catch any errors thrown by the Layout component.
@@ -31,17 +32,21 @@ export default function RootLayout() {
 	return <RootLayoutNav />
 }
 
+const queryClient = new QueryClient()
+
 function RootLayoutNav() {
 	return (
 		<ThemeProvider value={DarkTheme}>
-			<Stack>
-				<Stack.Screen
-					name='(tabs)'
-					options={{
-						headerShown: false,
-					}}
-				/>
-			</Stack>
+			<QueryClientProvider client={queryClient}>
+				<Stack>
+					<Stack.Screen
+						name='(tabs)'
+						options={{
+							headerShown: false,
+						}}
+					/>
+				</Stack>
+			</QueryClientProvider>
 		</ThemeProvider>
 	)
 }

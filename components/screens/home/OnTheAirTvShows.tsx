@@ -1,5 +1,11 @@
-import { memo, useCallback, useEffect, useState } from 'react'
-import { StyleSheet, Text, View, Image, Pressable } from 'react-native'
+import {
+	StyleSheet,
+	Text,
+	View,
+	Image,
+	Pressable,
+	ActivityIndicator,
+} from 'react-native'
 import { TMDBTvShows } from '../../../constants/types'
 import axios from 'axios'
 import { colors, globalStyles, margins } from '../../../constants/styles'
@@ -10,40 +16,46 @@ import {
 import { FlatList } from 'react-native-gesture-handler'
 import { getTVShowGenreById } from '../../../utils'
 import { Link } from 'expo-router'
+import { useQuery } from '@tanstack/react-query'
 
-function useOnTheAirTvShows() {
-	const [tvShows, setTvShows] = useState<TMDBTvShows[]>([])
+const fetchOnTheAirTvShows = async (signal: AbortSignal) => {
+	try {
+		const response = await axios.get(
+			'https://api.themoviedb.org/3/tv/on_the_air',
+			{
+				signal,
+				headers: { Authorization: process.env.EXPO_PUBLIC_API_KEY },
+			}
+		)
 
-	const fetchOnTheAirTvShows = useCallback(async () => {
-		try {
-			const response = await axios.get(
-				'https://api.themoviedb.org/3/tv/on_the_air',
-				{
-					headers: { Authorization: process.env.EXPO_PUBLIC_API_KEY },
-				}
-			)
+		console.log('Fetched On The Air Tv Shows')
+		return response.data.results
+	} catch (error) {
+		console.error('Error fetching On The Air Tv Shows: ', error)
+	}
+}
 
-			console.log('Fetched On The Air Tv Shows')
-			return response.data.results
-		} catch (error) {
-			console.error('Error fetching On The Air Tv Shows: ', error)
-		}
-	}, [])
+function OnTheAirTvShows() {
+	const { isLoading, data } = useQuery({
+		queryKey: ['home', 'OnTheAirTvShows'],
+		queryFn: ({ signal }) => fetchOnTheAirTvShows(signal),
+	})
 
-	useEffect(() => {
-		fetchOnTheAirTvShows().then((tvShows: TMDBTvShows[]) => setTvShows(tvShows))
-	}, [])
-
-	const OnTheAirTvShows = (
+	return (
 		<>
 			<Text style={[globalStyles.sectionTitle, { marginTop: hp(3) }]}>
 				On The Air
 			</Text>
+			{isLoading && (
+				<View style={{ marginVertical: hp(1.5) }}>
+					<ActivityIndicator />
+				</View>
+			)}
 			<FlatList
 				horizontal
 				showsHorizontalScrollIndicator={false}
-				data={tvShows}
-				keyExtractor={(item) => item.id.toString()}
+				data={data}
+				keyExtractor={(item: TMDBTvShows) => item.id.toString()}
 				contentContainerStyle={styles.flatListContainer}
 				renderItem={({ item, index }) => {
 					const title =
@@ -58,9 +70,9 @@ function useOnTheAirTvShows() {
 					return (
 						<Link
 							href={{
-								pathname: '/[id]',
+								pathname: '/[movieID]',
 								params: {
-									id: item.id,
+									movieID: item.id,
 									poster: item.backdrop_path,
 								},
 							}}
@@ -83,11 +95,9 @@ function useOnTheAirTvShows() {
 			/>
 		</>
 	)
-
-	return { OnTheAirTvShows, fetchOnTheAirTvShows }
 }
 
-export default useOnTheAirTvShows
+export default OnTheAirTvShows
 
 const styles = StyleSheet.create({
 	flatListContainer: {

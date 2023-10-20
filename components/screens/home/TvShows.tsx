@@ -1,5 +1,4 @@
-import { useCallback, useEffect, useState } from 'react'
-import { StyleSheet, Text, View, Image, Pressable } from 'react-native'
+import { StyleSheet, Text, View, Image, ActivityIndicator } from 'react-native'
 import { TMDBTvShows } from '../../../constants/types'
 import axios from 'axios'
 import { colors, globalStyles, margins } from '../../../constants/styles'
@@ -10,40 +9,46 @@ import {
 import { FlatList } from 'react-native-gesture-handler'
 import { getTVShowGenreById } from '../../../utils'
 import { Link } from 'expo-router'
+import { useQuery } from '@tanstack/react-query'
 
-function useTvShows() {
-	const [tvShows, setTvShows] = useState<TMDBTvShows[]>([])
+const fetchTvShows = async (signal: AbortSignal) => {
+	try {
+		const response = await axios.get(
+			'https://api.themoviedb.org/3/discover/tv?language=en-US&page=1&screened_theatrically=true&sort_by=popularity.desc',
+			{
+				signal,
+				headers: { Authorization: process.env.EXPO_PUBLIC_API_KEY },
+			}
+		)
 
-	const fetchTvShows = useCallback(async () => {
-		try {
-			const response = await axios.get(
-				'https://api.themoviedb.org/3/discover/tv?language=en-US&page=1&screened_theatrically=true&sort_by=popularity.desc',
-				{
-					headers: { Authorization: process.env.EXPO_PUBLIC_API_KEY },
-				}
-			)
+		console.log('Fetched Tv Shows')
+		return response.data.results
+	} catch (error) {
+		console.error('Error fetching Tv Shows: ', error)
+	}
+}
 
-			console.log('Fetched Tv Shows')
-			return response.data.results
-		} catch (error) {
-			console.error('Error fetching Tv Shows: ', error)
-		}
-	}, [])
+function TvShows() {
+	const { isLoading, data } = useQuery({
+		queryKey: ['home', 'tvShows'],
+		queryFn: ({ signal }) => fetchTvShows(signal),
+	})
 
-	useEffect(() => {
-		fetchTvShows().then((tvShows: TMDBTvShows[]) => setTvShows(tvShows))
-	}, [])
-
-	const TvShows = (
+	return (
 		<>
 			<Text style={[globalStyles.sectionTitle, { marginTop: hp(3) }]}>
 				TV shows
 			</Text>
+			{isLoading && (
+				<View style={{ marginVertical: hp(1.5) }}>
+					<ActivityIndicator />
+				</View>
+			)}
 			<FlatList
 				horizontal
 				showsHorizontalScrollIndicator={false}
-				data={tvShows}
-				keyExtractor={(item) => item.id.toString()}
+				data={data}
+				keyExtractor={(item: TMDBTvShows) => item.id.toString()}
 				contentContainerStyle={styles.flatListContainer}
 				renderItem={({ item, index }) => {
 					const title =
@@ -58,9 +63,9 @@ function useTvShows() {
 					return (
 						<Link
 							href={{
-								pathname: '/[id]',
+								pathname: '/[movieID]',
 								params: {
-									id: item.id,
+									movieID: item.id,
 									poster: item.backdrop_path,
 								},
 							}}
@@ -83,11 +88,9 @@ function useTvShows() {
 			/>
 		</>
 	)
-
-	return { TvShows, fetchTvShows }
 }
 
-export default useTvShows
+export default TvShows
 
 const styles = StyleSheet.create({
 	flatListContainer: {

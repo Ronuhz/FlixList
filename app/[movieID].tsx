@@ -5,6 +5,7 @@ import {
 	ActivityIndicator,
 	StyleSheet,
 	Pressable,
+	ImageBackground,
 } from 'react-native'
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router'
 import {
@@ -12,12 +13,12 @@ import {
 	heightPercentageToDP as hp,
 } from 'react-native-responsive-screen'
 import { useEffect, useState } from 'react'
-import { colors } from '../constants/styles'
+import { colors, margins } from '../constants/styles'
 import { Ionicons } from '@expo/vector-icons'
 import axios from 'axios'
 import { TMDBMovieDetails } from '../constants/types'
-import Animated from 'react-native-reanimated'
 import { BlurView } from 'expo-blur'
+import { ScrollView } from 'react-native-gesture-handler'
 
 const fetchDetails = async (id: string) => {
 	try {
@@ -35,8 +36,9 @@ const fetchDetails = async (id: string) => {
 }
 
 const details = () => {
-	const [posterLoading, setPosterLoading] = useState(false)
 	const { movieID: id, poster } = useLocalSearchParams()
+
+	const [posterLoading, setPosterLoading] = useState(false)
 	const [details, setDetails] = useState<TMDBMovieDetails>()
 
 	const { back } = useRouter()
@@ -51,7 +53,6 @@ const details = () => {
 				options={{
 					headerTransparent: true,
 					headerTitle: '',
-					animation: 'slide_from_right',
 					headerLeft: (props) => {
 						return (
 							<Pressable onPress={back}>
@@ -79,31 +80,46 @@ const details = () => {
 				}}
 			/>
 
-			{/* Poster */}
-			<View style={{ width: wp(100), height: hp(30) }}>
-				<Image
-					style={{ flex: 1 }}
-					resizeMode='cover'
-					source={{ uri: `https://image.tmdb.org/t/p/original/${poster}` }}
-					loadingIndicatorSource={{
-						uri: `https://subzfresh.com/wp-content/uploads/2022/04/apple_158989157.jpg`,
-					}}
-					onLoadStart={() => setPosterLoading(true)}
-					onLoadEnd={() => setPosterLoading(false)}
-				/>
-				{posterLoading && (
-					<ActivityIndicator
-						style={{
-							position: 'absolute',
-							right: '50%',
-							bottom: '40%',
-							transform: [{ translateX: 10 }],
-						}}
-					/>
-				)}
-			</View>
+			<ImageBackground
+				source={{ uri: `https://image.tmdb.org/t/p/original/${poster}` }}
+				resizeMode='cover'
+				style={styles.backgroundImage}
+			>
+				<ScrollView showsVerticalScrollIndicator={false}>
+					<BlurView tint='dark' intensity={90} style={styles.blurContainer}>
+						{/* Upper Row */}
+						<View style={styles.upperRowContainer}>
+							<View style={styles.voteAverageContainer}>
+								<Text style={styles.voteAverage}>
+									IMDB {details?.vote_average.toFixed(1)}
+								</Text>
+							</View>
 
-			<Text style={{ color: '#fff', fontSize: 32 }}>{details?.title}</Text>
+							<Text
+								style={styles.voteCount}
+							>{`(${details?.vote_count} votes)`}</Text>
+						</View>
+
+						<Text style={styles.title}>{details?.title}</Text>
+
+						{/* Genres */}
+						<ScrollView
+							horizontal
+							bounces={false}
+							contentContainerStyle={styles.genreScrollViewContainer}
+						>
+							{details?.genres.map((genre) => (
+								<View key={genre.id} style={styles.genreContainer}>
+									<Text style={styles.genreName}>{genre.name}</Text>
+								</View>
+							))}
+						</ScrollView>
+
+						{/* Body */}
+						<Text style={styles.overview}>{details?.overview}</Text>
+					</BlurView>
+				</ScrollView>
+			</ImageBackground>
 		</View>
 	)
 }
@@ -111,5 +127,66 @@ const details = () => {
 export default details
 
 const styles = StyleSheet.create({
+	backgroundImage: {
+		flex: 1,
+		width: wp(100),
+		height: hp(66),
+	},
+	blurContainer: {
+		flexGrow: 1,
+		overflow: 'hidden',
+		marginTop: hp(62),
+		paddingHorizontal: margins.side,
+		// borderTopLeftRadius: 32,
+		// borderTopRightRadius: 32,
+		borderRadius: 32,
+		paddingBottom: 30,
+	},
+	upperRowContainer: {
+		flexDirection: 'row',
+		alignItems: 'center',
+		gap: 15,
+		marginVertical: hp(1.5),
+	},
+	voteAverageContainer: {
+		backgroundColor: '#FFD700',
+		borderRadius: 16,
+		paddingVertical: 6,
+		paddingHorizontal: 10,
+	},
+	voteAverage: {
+		alignSelf: 'center',
+		fontSize: hp(1.7),
+		fontWeight: 'bold',
+	},
+	voteCount: { fontSize: hp(1.8), color: colors.mutedForeground },
+	title: {
+		color: '#fff',
+		fontFamily: 'Lato-Regular',
+		fontSize: hp(3.4),
+		marginBottom: hp(1.4),
+	},
+	genreScrollViewContainer: {
+		flexDirection: 'row',
+		gap: 8,
+		marginBottom: hp(1.5),
+	},
+	genreContainer: {
+		backgroundColor: '#3D3D3D',
+		borderRadius: 16,
+		paddingVertical: 8,
+		paddingHorizontal: 12,
+	},
+	genreName: {
+		alignSelf: 'center',
+		fontSize: hp(1.7),
+		fontWeight: 'bold',
+		color: colors.mutedForeground,
+	},
+	overview: {
+		color: '#fff',
+		fontSize: hp(2),
+		fontWeight: '200',
+	},
 	container: { flex: 1, backgroundColor: colors.background },
 })

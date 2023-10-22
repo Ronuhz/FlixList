@@ -16,6 +16,7 @@ import axios from 'axios'
 import { IMovie } from '../../../constants/types'
 import { Link } from 'expo-router'
 import { useQuery } from '@tanstack/react-query'
+import Animated, { FadeIn } from 'react-native-reanimated'
 
 const fetchPopularMovies = async (signal: AbortSignal) => {
 	await new Promise((resolve) => setTimeout(resolve, 2000))
@@ -65,16 +66,17 @@ function PopularMovies() {
 					return (
 						<Link
 							href={{
-								pathname: '/[movieID]',
+								pathname: '/(tabs)/[id]',
 								params: {
-									movieID: item.id,
+									id: item.id,
 									poster: item.poster_path,
+									type: 'movie',
 								},
 							}}
 							style={{ gap: 6 }}
 						>
-							<View>
-								<Image
+							<Animated.View entering={FadeIn}>
+								<Animated.Image
 									style={styles.backdropImage}
 									resizeMode='cover'
 									source={{
@@ -85,7 +87,7 @@ function PopularMovies() {
 								<Text style={styles.genres}>
 									{getMovieGenreById(item.genre_ids)}
 								</Text>
-							</View>
+							</Animated.View>
 						</Link>
 					)
 				}}

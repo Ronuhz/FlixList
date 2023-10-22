@@ -70,10 +70,11 @@ function OnTheAirTvShows() {
 					return (
 						<Link
 							href={{
-								pathname: '/[movieID]',
+								pathname: '/(tabs)/[id]',
 								params: {
-									movieID: item.id,
+									id: item.id,
 									poster: item.backdrop_path,
+									type: 'tv',
 								},
 							}}
 							style={{ gap: 6 }}

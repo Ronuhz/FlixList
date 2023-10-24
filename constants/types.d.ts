@@ -1,4 +1,4 @@
-export interface IMovie {
+export type IMovie = {
 	adult: boolean
 	backdrop_path: string
 	genre_ids: number[]
@@ -31,7 +31,7 @@ export type TMDBTvShows = {
 	vote_count: number
 }
 
-export interface IOMDBMovie {
+export type IOMDBMovie = {
 	Poster: string
 	Title: string
 	Type: 'movie' | 'series' | 'episode'

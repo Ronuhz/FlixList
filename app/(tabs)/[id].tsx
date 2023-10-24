@@ -294,7 +294,7 @@ const styles = StyleSheet.create({
 	},
 	seasonCard: {
 		borderRadius: 8,
-		backgroundColor: colors.background,
+		backgroundColor: colors.mutedBackground,
 		paddingVertical: 8,
 		paddingHorizontal: 12,
 	},

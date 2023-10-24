@@ -1,12 +1,16 @@
 import { Text, StyleSheet, Platform, SafeAreaView } from 'react-native'
 import { colors, globalStyles, margins } from '../../constants/styles'
-import { useState, useContext, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { IOMDBMovie } from '../../constants/types'
 import SearchBar from '../../components/screens/discover/SearchBar'
 import fetchSearchedMovies from '../../components/screens/discover/fetchSearchedMovies'
 import MasonryList from '@react-native-seoul/masonry-list'
 import MovieCard from '../../components/screens/discover/MovieCard'
 import { DiscoverContext } from '../../contexts/discover'
+import {
+	widthPercentageToDP as wp,
+	heightPercentageToDP as hp,
+} from 'react-native-responsive-screen'
 
 function DiscoverScreen() {
 	const [loading, setLoading] = useState(false)
@@ -37,12 +41,12 @@ function DiscoverScreen() {
 	return (
 		<DiscoverContext.Provider value={{ category, setCategory }}>
 			<SafeAreaView style={styles.container}>
-				<Text style={[globalStyles.sectionTitle, styles.title]}>
+				<Text style={[globalStyles.sectionTitle, { width: wp(70) }]}>
 					Find Movies, Tv series, and more..
 				</Text>
 				<SearchBar query={query} setQuery={setQuery} setMovies={setMovies} />
 
-				{!movies || (
+				{movies && (
 					<MasonryList
 						data={movies}
 						numColumns={2}
@@ -64,10 +68,10 @@ function DiscoverScreen() {
 export default DiscoverScreen
 
 const styles = StyleSheet.create({
-	title: { maxWidth: 283, marginTop: Platform.OS === 'android' ? 24 : 0 },
 	container: {
 		flexGrow: 1,
 		backgroundColor: colors.background,
+		marginTop: Platform.OS === 'android' ? 24 : 0,
 	},
 	masonryListContainer: { marginHorizontal: margins.side },
 })

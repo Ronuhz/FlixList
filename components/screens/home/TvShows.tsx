@@ -21,10 +21,9 @@ const fetchTvShows = async (signal: AbortSignal) => {
 			}
 		)
 
-		console.log('Fetched Tv Shows')
 		return response.data.results
 	} catch (error) {
-		console.error('Error fetching Tv Shows: ', error)
+		console.error('Error fetching Tv Shows: ', JSON.stringify(error, null, 2))
 	}
 }
 
@@ -63,21 +62,20 @@ function TvShows() {
 					return (
 						<Link
 							href={{
-								pathname: '/(tabs)/[id]',
+								pathname: '/[id]',
 								params: {
 									id: item.id,
-									poster: item.backdrop_path,
+									poster: item.backdrop_path ?? '',
 									type: 'tv',
 								},
 							}}
-							style={{ gap: 6 }}
 						>
 							<View style={{ gap: 6 }}>
 								<Image
 									style={styles.coverImage}
 									resizeMode='cover'
 									source={{
-										uri: `https://image.tmdb.org/t/p/original/${item.backdrop_path}`,
+										uri: `https://image.tmdb.org/t/p/w500/${item.backdrop_path}`,
 									}}
 								/>
 								<Text style={styles.title}>{title}</Text>
@@ -107,7 +105,6 @@ const styles = StyleSheet.create({
 		backgroundColor: colors.placeholder,
 	},
 	title: {
-		// 12 characters max
 		color: '#fff',
 		fontFamily: 'Lato-Regular',
 		fontSize: hp(2.3),

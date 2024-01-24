@@ -3,19 +3,14 @@ import {
 	Text,
 	Pressable,
 	StyleSheet,
-	Dimensions,
 	LayoutChangeEvent,
 } from 'react-native'
 import { colors, margins } from '../../../constants/styles'
-import { SetStateAction, useCallback, useContext, useState } from 'react'
-import Animated, {
-	useAnimatedStyle,
-	useSharedValue,
-	withTiming,
-} from 'react-native-reanimated'
+import { useCallback, useContext, useState } from 'react'
+import Animated, { useAnimatedStyle, withTiming } from 'react-native-reanimated'
 import { DiscoverContext } from '../../../contexts/discover'
 
-const CATEGORIES = ['All', 'Movies', 'Tv Series']
+const CATEGORIES = ['Movies', 'Tv Series']
 
 interface TabProps {
 	title: string
@@ -57,7 +52,7 @@ interface TabLayout {
 }
 
 const CategorySelector = () => {
-	const [activeCategory, setActiveCategory] = useState('All')
+	const [activeCategory, setActiveCategory] = useState('Movies')
 	const [tabLayouts, setTabLayouts] = useState<TabLayout[]>([])
 	const { setCategory } = useContext(DiscoverContext)
 

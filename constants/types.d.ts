@@ -166,3 +166,10 @@ export type TMDBSeriesDetails = {
 	}[]
 	// Add more fields as needed
 }
+
+export type signUpError = {
+	code: string
+	message: string
+	longMessage: string
+	meta: { paramName: 'email_address' | 'username' | 'password' | 'identifier' }
+}

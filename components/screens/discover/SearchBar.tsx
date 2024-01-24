@@ -34,7 +34,10 @@ export default function SearchBar({ query, setQuery, setMovies }: Props) {
 					setLoading(false)
 				})
 				.catch((error) =>
-					console.error('Something went wrong during search debounce: ', error)
+					console.error(
+						'Something went wrong during search debounce: ',
+						JSON.stringify(error, null, 2)
+					)
 				)
 		}, 500)
 

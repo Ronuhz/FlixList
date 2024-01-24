@@ -16,10 +16,8 @@ import axios from 'axios'
 import { IMovie } from '../../../constants/types'
 import { Link } from 'expo-router'
 import { useQuery } from '@tanstack/react-query'
-import Animated, { FadeIn } from 'react-native-reanimated'
 
 const fetchPopularMovies = async (signal: AbortSignal) => {
-	await new Promise((resolve) => setTimeout(resolve, 2000))
 	try {
 		const response = await axios.get(
 			'https://api.themoviedb.org/3/movie/popular',
@@ -30,10 +28,12 @@ const fetchPopularMovies = async (signal: AbortSignal) => {
 				},
 			}
 		)
-		console.log('Fetched trending movies')
 		return response.data.results
 	} catch (error) {
-		console.error('Error fetching trending movies: ', error)
+		console.error(
+			'Error fetching trending movies: ',
+			JSON.stringify(error, null, 2)
+		)
 	}
 }
 
@@ -66,28 +66,27 @@ function PopularMovies() {
 					return (
 						<Link
 							href={{
-								pathname: '/(tabs)/[id]',
+								pathname: '/[id]',
 								params: {
 									id: item.id,
 									poster: item.poster_path,
 									type: 'movie',
 								},
 							}}
-							style={{ gap: 6 }}
 						>
-							<Animated.View entering={FadeIn}>
-								<Animated.Image
-									style={styles.backdropImage}
+							<View style={{ gap: 6 }}>
+								<Image
+									style={styles.coverImage}
 									resizeMode='cover'
 									source={{
-										uri: `https://image.tmdb.org/t/p/w500/${item.backdrop_path}`,
+										uri: `https://image.tmdb.org/t/p/original/${item.backdrop_path}`,
 									}}
 								/>
 								<Text style={styles.title}>{title}</Text>
 								<Text style={styles.genres}>
 									{getMovieGenreById(item.genre_ids)}
 								</Text>
-							</Animated.View>
+							</View>
 						</Link>
 					)
 				}}
@@ -105,7 +104,7 @@ const styles = StyleSheet.create({
 		paddingRight: 38,
 		paddingTop: 3,
 	},
-	backdropImage: {
+	coverImage: {
 		backgroundColor: colors.placeholder,
 		borderRadius: 20,
 		width: wp(85),

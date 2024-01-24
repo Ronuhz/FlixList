@@ -1,11 +1,4 @@
-import {
-	StyleSheet,
-	Text,
-	View,
-	Image,
-	Pressable,
-	ActivityIndicator,
-} from 'react-native'
+import { StyleSheet, Text, View, Image, ActivityIndicator } from 'react-native'
 import { TMDBTvShows } from '../../../constants/types'
 import axios from 'axios'
 import { colors, globalStyles, margins } from '../../../constants/styles'
@@ -15,8 +8,8 @@ import {
 } from 'react-native-responsive-screen'
 import { FlatList } from 'react-native-gesture-handler'
 import { getTVShowGenreById } from '../../../utils'
-import { Link } from 'expo-router'
 import { useQuery } from '@tanstack/react-query'
+import { Link } from 'expo-router'
 
 const fetchOnTheAirTvShows = async (signal: AbortSignal) => {
 	try {
@@ -27,11 +20,12 @@ const fetchOnTheAirTvShows = async (signal: AbortSignal) => {
 				headers: { Authorization: process.env.EXPO_PUBLIC_API_KEY },
 			}
 		)
-
-		console.log('Fetched On The Air Tv Shows')
 		return response.data.results
 	} catch (error) {
-		console.error('Error fetching On The Air Tv Shows: ', error)
+		console.error(
+			'Error fetching On The Air Tv Shows: ',
+			JSON.stringify(error, null, 2)
+		)
 	}
 }
 
@@ -70,21 +64,20 @@ function OnTheAirTvShows() {
 					return (
 						<Link
 							href={{
-								pathname: '/(tabs)/[id]',
+								pathname: '/[id]',
 								params: {
 									id: item.id,
-									poster: item.backdrop_path,
+									poster: item.backdrop_path ?? '',
 									type: 'tv',
 								},
 							}}
-							style={{ gap: 6 }}
 						>
 							<View style={{ gap: 6 }}>
 								<Image
 									style={styles.coverImage}
 									resizeMode='cover'
 									source={{
-										uri: `https://image.tmdb.org/t/p/original/${item.backdrop_path}`,
+										uri: `https://image.tmdb.org/t/p/w500/${item.backdrop_path}`,
 									}}
 								/>
 								<Text style={styles.title}>{title}</Text>

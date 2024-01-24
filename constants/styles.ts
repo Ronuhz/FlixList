@@ -2,9 +2,9 @@ import { StyleSheet } from 'react-native'
 import { heightPercentageToDP as hp } from 'react-native-responsive-screen'
 
 export const colors = {
-	// background: '#15141F',
+	background: '#15141F',
 	// background: '#111111',
-	background: 'black',
+	// background: 'black',
 	primary: 'darkorange',
 	secondary: '#211F30',
 	mutedForeground: '#BCBCBC',

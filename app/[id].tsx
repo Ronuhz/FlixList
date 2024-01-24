@@ -12,10 +12,10 @@ import {
 	heightPercentageToDP as hp,
 } from 'react-native-responsive-screen'
 import { useEffect, useState } from 'react'
-import { colors, margins } from '../../constants/styles'
+import { colors, margins } from '../constants/styles'
 import { Ionicons } from '@expo/vector-icons'
 import axios from 'axios'
-import { TMDBMovieDetails, TMDBSeriesDetails } from '../../constants/types'
+import { TMDBMovieDetails, TMDBSeriesDetails } from '../constants/types'
 import { BlurView } from 'expo-blur'
 import { ScrollView } from 'react-native-gesture-handler'
 import Animated, { FadeIn, SlideInDown } from 'react-native-reanimated'
@@ -65,7 +65,10 @@ const Details = () => {
 					headerTitle: '',
 					headerLeft: (props) => {
 						return (
-							<Pressable onPress={back} style={{ left: 20 }}>
+							<Pressable
+								onPress={back}
+								style={{ left: -10, top: -10, padding: 20 }}
+							>
 								<Animated.View entering={FadeIn}>
 									<BlurView
 										tint='dark'

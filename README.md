@@ -49,6 +49,7 @@ Follow these steps to get the project up and running on your local development e
 
    ```
    EXPO_PUBLIC_API_KEY=Bearer your_tmdb_api_key
+   EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY=your clerk api key
    ```
 
 4. Start the development server:

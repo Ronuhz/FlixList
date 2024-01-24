@@ -17,7 +17,7 @@ function DiscoverScreen() {
 	const [page, setPage] = useState(2)
 	const [query, setQuery] = useState('')
 	const [movies, setMovies] = useState<IOMDBMovie[]>([])
-	const [category, setCategory] = useState('All')
+	const [category, setCategory] = useState('Movies')
 
 	const fetchMoreMovies = () => {
 		if (loading) return

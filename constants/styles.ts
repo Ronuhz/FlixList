@@ -22,6 +22,5 @@ export const globalStyles = StyleSheet.create({
 		color: '#fff',
 		fontSize: hp(3.3),
 		marginBottom: hp(1.5),
-		marginHorizontal: margins.side,
 	},
 })

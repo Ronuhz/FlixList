@@ -172,6 +172,12 @@ export type signUpError = {
 	message: string
 	longMessage: string
 	meta: {
-		paramName: 'email_address' | 'username' | 'password' | 'identifier' | 'code'
+		paramName:
+			| 'email_address'
+			| 'username'
+			| 'password'
+			| 'identifier'
+			| 'code'
+			| 'password_confirm'
 	}
 }

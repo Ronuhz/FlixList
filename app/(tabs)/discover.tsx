@@ -41,7 +41,12 @@ function DiscoverScreen() {
 	return (
 		<DiscoverContext.Provider value={{ category, setCategory }}>
 			<SafeAreaView style={styles.container}>
-				<Text style={[globalStyles.sectionTitle, { width: wp(70) }]}>
+				<Text
+					style={[
+						globalStyles.sectionTitle,
+						{ width: wp(70), marginHorizontal: margins.side },
+					]}
+				>
 					Find Movies, Tv series, and more..
 				</Text>
 				<SearchBar query={query} setQuery={setQuery} setMovies={setMovies} />

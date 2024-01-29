@@ -1,4 +1,11 @@
-import { StyleSheet, Text, View, Image, ActivityIndicator } from 'react-native'
+import {
+	StyleSheet,
+	Text,
+	View,
+	Image,
+	ActivityIndicator,
+	FlatList,
+} from 'react-native'
 import { TMDBTvShows } from '../../../constants/types'
 import axios from 'axios'
 import { colors, globalStyles, margins } from '../../../constants/styles'
@@ -6,7 +13,6 @@ import {
 	widthPercentageToDP as wp,
 	heightPercentageToDP as hp,
 } from 'react-native-responsive-screen'
-import { FlatList } from 'react-native-gesture-handler'
 import { getTVShowGenreById } from '../../../utils'
 import { useQuery } from '@tanstack/react-query'
 import { Link } from 'expo-router'
@@ -37,7 +43,12 @@ function OnTheAirTvShows() {
 
 	return (
 		<>
-			<Text style={[globalStyles.sectionTitle, { marginTop: hp(3) }]}>
+			<Text
+				style={[
+					globalStyles.sectionTitle,
+					{ marginTop: hp(3), marginHorizontal: margins.side },
+				]}
+			>
 				On The Air
 			</Text>
 			{isLoading && (

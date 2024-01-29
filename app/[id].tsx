@@ -5,6 +5,7 @@ import {
 	Pressable,
 	ImageBackground,
 	Image,
+	ScrollView,
 } from 'react-native'
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router'
 import {
@@ -13,12 +14,11 @@ import {
 } from 'react-native-responsive-screen'
 import { useEffect, useState } from 'react'
 import { colors, margins } from '../constants/styles'
-import { Ionicons } from '@expo/vector-icons'
 import axios from 'axios'
 import { TMDBMovieDetails, TMDBSeriesDetails } from '../constants/types'
 import { BlurView } from 'expo-blur'
-import { ScrollView } from 'react-native-gesture-handler'
 import Animated, { FadeIn, SlideInDown } from 'react-native-reanimated'
+import { Ionicons } from '@expo/vector-icons'
 
 const fetchDetails = async (id: string, type: string = 'movie') => {
 	try {
@@ -71,6 +71,7 @@ const Details = () => {
 							>
 								<Animated.View entering={FadeIn}>
 									<BlurView
+										experimentalBlurMethod='dimezisBlurView'
 										tint='dark'
 										intensity={40}
 										style={{
@@ -82,11 +83,7 @@ const Details = () => {
 											justifyContent: 'center',
 										}}
 									>
-										<Ionicons
-											name='ios-chevron-back'
-											size={hp(4.2)}
-											color='#fff'
-										/>
+										<Ionicons name='chevron-back' size={hp(4.2)} color='#fff' />
 									</BlurView>
 								</Animated.View>
 							</Pressable>
@@ -105,7 +102,12 @@ const Details = () => {
 				{details && (
 					<ScrollView showsVerticalScrollIndicator={false} bounces={false}>
 						<Animated.View entering={SlideInDown.springify().damping(18)}>
-							<BlurView tint='dark' intensity={90} style={styles.blurContainer}>
+							<BlurView
+								experimentalBlurMethod='dimezisBlurView'
+								tint='dark'
+								intensity={90}
+								style={styles.blurContainer}
+							>
 								{/* Upper Row */}
 								{isMovie && (
 									<View style={styles.upperRowContainer}>

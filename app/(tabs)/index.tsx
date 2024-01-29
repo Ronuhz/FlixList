@@ -1,7 +1,12 @@
-import { StyleSheet, SafeAreaView, Platform } from 'react-native'
+import {
+	StyleSheet,
+	SafeAreaView,
+	Platform,
+	RefreshControl,
+	ScrollView,
+} from 'react-native'
 import { colors } from '../../constants/styles'
 import { useCallback, useState } from 'react'
-import { RefreshControl, ScrollView } from 'react-native-gesture-handler'
 import PopularMovies from '../../components/screens/home/PopularMovies'
 import { useQueryClient } from '@tanstack/react-query'
 import OnTheAirTvShows from '../../components/screens/home/OnTheAirTvShows'
@@ -37,7 +42,6 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
 	container: {
 		paddingTop: 20,
-		marginTop: Platform.OS === 'android' ? 24 : 0,
 		backgroundColor: colors.background,
 		flex: 1,
 	},

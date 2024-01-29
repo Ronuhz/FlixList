@@ -5,13 +5,13 @@ import {
 	StyleSheet,
 	Pressable,
 	ActivityIndicator,
+	TextInput,
 } from 'react-native'
 import React, { useState } from 'react'
 import { colors, margins } from '../constants/styles'
 import { heightPercentageToDP as hp } from 'react-native-responsive-screen'
 import { router } from 'expo-router'
 import { Ionicons } from '@expo/vector-icons'
-import { TextInput } from 'react-native-gesture-handler'
 import { useSignIn } from '@clerk/clerk-expo'
 import ErrorText from '../components/errorText'
 import { signUpError } from '../constants/types'
@@ -72,7 +72,7 @@ const signIn = () => {
 						padding: 2,
 					}}
 				>
-					<Ionicons name='ios-close' size={hp(3.5)} color='#fff' />
+					<Ionicons name='close' size={hp(3.5)} color='#fff' />
 				</Pressable>
 			</View>
 

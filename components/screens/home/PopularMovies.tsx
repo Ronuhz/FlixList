@@ -45,7 +45,11 @@ function PopularMovies() {
 
 	return (
 		<>
-			<Text style={globalStyles.sectionTitle}>Popular movies</Text>
+			<Text
+				style={[globalStyles.sectionTitle, { marginHorizontal: margins.side }]}
+			>
+				Popular movies
+			</Text>
 			{isLoading && (
 				<View style={{ marginVertical: hp(1.5) }}>
 					<ActivityIndicator />

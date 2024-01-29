@@ -6,9 +6,9 @@ import {
 	Text,
 	StyleSheet,
 	Platform,
-	ActivityIndicator,
+	TextInput,
+	KeyboardAvoidingView,
 } from 'react-native'
-import { TextInput } from 'react-native-gesture-handler'
 import { colors, margins } from '../constants/styles'
 import {
 	heightPercentageToDP as hp,
@@ -28,6 +28,7 @@ const SignUpScreen = () => {
 	const [username, setUsername] = useState('')
 	const [emailAddress, setEmailAddress] = useState('')
 	const [password, setPassword] = useState('')
+	const [passwordConfirm, setPasswordConfirm] = useState('')
 	const [pendingVerification, setPendingVerification] = useState(false)
 	const [code, setCode] = useState('')
 
@@ -51,6 +52,20 @@ const SignUpScreen = () => {
 		} catch (err: any) {
 			setErrors(err.errors)
 			console.log(JSON.stringify(err, null, 2))
+		} finally {
+			if (password != passwordConfirm) {
+				setErrors((prev) => [
+					...(prev ?? []),
+					{
+						code: 'form_param_nil',
+						message: 'Passwords do not match.',
+						longMessage: 'Passwords do not match.',
+						meta: { paramName: 'password_confirm' },
+					},
+				])
+
+				return
+			}
 		}
 	}
 
@@ -99,7 +114,7 @@ const SignUpScreen = () => {
 								padding: 2,
 							}}
 						>
-							<Ionicons name='ios-close' size={hp(3.5)} color='#fff' />
+							<Ionicons name='close' size={hp(3.5)} color='#fff' />
 						</Pressable>
 					</View>
 
@@ -156,6 +171,26 @@ const SignUpScreen = () => {
 							)}
 						</View>
 
+						<View>
+							<TextInput
+								style={styles.input}
+								autoCapitalize='none'
+								value={passwordConfirm}
+								placeholder='Confirm password'
+								placeholderTextColor={colors.mutedForeground}
+								secureTextEntry={true}
+								onChangeText={(passwordConfirm) =>
+									setPasswordConfirm(passwordConfirm)
+								}
+							/>
+							{errors?.map(
+								(error, index) =>
+									error.meta.paramName === 'password_confirm' && (
+										<ErrorText key={index} errorMessage={error.message} />
+									)
+							)}
+						</View>
+
 						<Pressable onPress={onSignUpPress} style={styles.signUpButton}>
 							<Text style={styles.signUpButtonText}>Sign up</Text>
 						</Pressable>
@@ -193,7 +228,7 @@ const SignUpScreen = () => {
 								padding: 2,
 							}}
 						>
-							<Ionicons name='ios-close' size={hp(3.5)} color='#fff' />
+							<Ionicons name='close' size={hp(3.5)} color='#fff' />
 						</Pressable>
 					</View>
 

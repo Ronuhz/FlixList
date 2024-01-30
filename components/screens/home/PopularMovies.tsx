@@ -1,21 +1,17 @@
-import {
-	Text,
-	FlatList,
-	Image,
-	StyleSheet,
-	View,
-	ActivityIndicator,
-} from 'react-native'
-import { colors, globalStyles, margins } from '../../../constants/styles'
-import {
-	widthPercentageToDP as wp,
-	heightPercentageToDP as hp,
-} from 'react-native-responsive-screen'
-import { getMovieGenreById } from '../../../utils'
-import axios from 'axios'
-import { IMovie } from '../../../constants/types'
-import { Link } from 'expo-router'
 import { useQuery } from '@tanstack/react-query'
+import axios from 'axios'
+import {
+	ActivityIndicator,
+	FlatList,
+	StyleSheet,
+	Text,
+	View,
+} from 'react-native'
+import { heightPercentageToDP as hp } from 'react-native-responsive-screen'
+import { globalStyles, margins } from '../../../constants/styles'
+import { IMovie } from '../../../constants/types'
+import HorizontalCard from './HorizontalCard'
+import { FlashList } from '@shopify/flash-list'
 
 const fetchPopularMovies = async (signal: AbortSignal) => {
 	try {
@@ -50,50 +46,34 @@ function PopularMovies() {
 			>
 				Popular movies
 			</Text>
+
 			{isLoading && (
 				<View style={{ marginVertical: hp(1.5) }}>
 					<ActivityIndicator />
 				</View>
 			)}
+
 			<FlatList
 				horizontal
 				showsHorizontalScrollIndicator={false}
 				data={data}
 				keyExtractor={(item: IMovie) => item.id.toString()}
 				contentContainerStyle={styles.flatListContainer}
-				renderItem={({ item, index }) => {
-					const title =
-						item.title.length > 35
-							? item.title.slice(0, 35) + '...'
-							: item.title
-
-					return (
-						<Link
-							href={{
-								pathname: '/[id]',
-								params: {
-									id: item.id,
-									poster: item.poster_path,
-									type: 'movie',
-								},
-							}}
-						>
-							<View style={{ gap: 6 }}>
-								<Image
-									style={styles.coverImage}
-									resizeMode='cover'
-									source={{
-										uri: `https://image.tmdb.org/t/p/original/${item.backdrop_path}`,
-									}}
-								/>
-								<Text style={styles.title}>{title}</Text>
-								<Text style={styles.genres}>
-									{getMovieGenreById(item.genre_ids)}
-								</Text>
-							</View>
-						</Link>
-					)
-				}}
+				renderItem={({ item }) => (
+					<HorizontalCard
+						title={item.title}
+						genre_ids={item.genre_ids}
+						backdrop_path={item.backdrop_path}
+						href={{
+							pathname: '/[id]',
+							params: {
+								id: item.id,
+								poster: item.poster_path,
+								type: 'movie',
+							},
+						}}
+					/>
+				)}
 			/>
 		</>
 	)
@@ -107,24 +87,5 @@ const styles = StyleSheet.create({
 		gap: 10,
 		paddingRight: 38,
 		paddingTop: 3,
-	},
-	coverImage: {
-		backgroundColor: colors.placeholder,
-		borderRadius: 20,
-		width: wp(85),
-		height: hp(23),
-	},
-	title: {
-		color: '#fff',
-		fontFamily: 'Lato-Regular',
-		fontSize: hp(2.3),
-		fontWeight: '600',
-		marginLeft: 2,
-	},
-	genres: {
-		color: colors.mutedForeground,
-		fontFamily: 'Lato-Regular',
-		fontSize: hp(1.5),
-		marginLeft: 2,
 	},
 })

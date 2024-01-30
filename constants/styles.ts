@@ -24,3 +24,19 @@ export const globalStyles = StyleSheet.create({
 		marginBottom: hp(1.5),
 	},
 })
+
+export const mediaCards = StyleSheet.create({
+	title: {
+		color: '#fff',
+		fontFamily: 'Lato-Regular',
+		fontSize: hp(2.3),
+		fontWeight: '600',
+		marginLeft: 2,
+	},
+	genres: {
+		color: colors.mutedForeground,
+		fontFamily: 'Lato-Regular',
+		fontSize: hp(1.5),
+		marginLeft: 2,
+	},
+})

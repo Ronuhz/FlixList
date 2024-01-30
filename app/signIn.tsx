@@ -1,20 +1,20 @@
-import {
-	View,
-	Text,
-	Platform,
-	StyleSheet,
-	Pressable,
-	ActivityIndicator,
-	TextInput,
-} from 'react-native'
-import React, { useState } from 'react'
-import { colors, margins } from '../constants/styles'
-import { heightPercentageToDP as hp } from 'react-native-responsive-screen'
-import { router } from 'expo-router'
-import { Ionicons } from '@expo/vector-icons'
 import { useSignIn } from '@clerk/clerk-expo'
-import ErrorText from '../components/errorText'
-import { signUpError } from '../constants/types'
+import { Ionicons } from '@expo/vector-icons'
+import { router } from 'expo-router'
+import React, { useState } from 'react'
+import {
+	ActivityIndicator,
+	Platform,
+	Pressable,
+	StyleSheet,
+	Text,
+	TextInput,
+	View,
+} from 'react-native'
+import { heightPercentageToDP as hp } from 'react-native-responsive-screen'
+import ErrorText from '../components/ErrorText'
+import { colors, margins } from '../constants/styles'
+import { SignUpError } from '../constants/types'
 
 const signIn = () => {
 	const { isLoaded, setActive, signIn } = useSignIn()
@@ -22,7 +22,7 @@ const signIn = () => {
 	const [emailAddress, setEmailAddress] = useState('')
 	const [password, setPassword] = useState('')
 
-	const [errors, setErrors] = useState<signUpError[]>()
+	const [errors, setErrors] = useState<SignUpError[]>()
 	const [isInputDisabled, setIsInputDisabled] = useState(false)
 
 	const onSignInPress = async () => {

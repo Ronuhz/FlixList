@@ -1,4 +1,3 @@
-import { margins } from '@/constants/styles'
 import { useAuth } from '@clerk/clerk-expo'
 import { router } from 'expo-router'
 import { Pressable, Text } from 'react-native'

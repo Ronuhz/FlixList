@@ -1,24 +1,20 @@
 import { useSignUp } from '@clerk/clerk-expo'
-import { useState } from 'react'
-import {
-	Pressable,
-	View,
-	Text,
-	StyleSheet,
-	Platform,
-	TextInput,
-	KeyboardAvoidingView,
-} from 'react-native'
-import { colors, margins } from '../constants/styles'
-import {
-	heightPercentageToDP as hp,
-	widthPercentageToDP as wp,
-} from 'react-native-responsive-screen'
-import { signUpError } from '../constants/types'
 import { Ionicons } from '@expo/vector-icons'
 import { router } from 'expo-router'
-import ErrorText from '../components/errorText'
+import { useState } from 'react'
+import {
+	Platform,
+	Pressable,
+	StyleSheet,
+	Text,
+	TextInput,
+	View,
+} from 'react-native'
 import { CodeField, Cursor } from 'react-native-confirmation-code-field'
+import { heightPercentageToDP as hp } from 'react-native-responsive-screen'
+import ErrorText from '../components/ErrorText'
+import { colors, margins } from '../constants/styles'
+import { SignUpError } from '../constants/types'
 
 const CELL_COUNT = 6
 
@@ -32,7 +28,7 @@ const SignUpScreen = () => {
 	const [pendingVerification, setPendingVerification] = useState(false)
 	const [code, setCode] = useState('')
 
-	const [errors, setErrors] = useState<signUpError[]>()
+	const [errors, setErrors] = useState<SignUpError[]>()
 
 	const onSignUpPress = async () => {
 		if (!isLoaded) {

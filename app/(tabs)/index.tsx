@@ -1,7 +1,6 @@
 import {
 	StyleSheet,
 	SafeAreaView,
-	Platform,
 	RefreshControl,
 	ScrollView,
 } from 'react-native'
@@ -13,8 +12,8 @@ import OnTheAirTvShows from '../../components/screens/home/OnTheAirTvShows'
 import TvShows from '../../components/screens/home/TvShows'
 
 export default function HomeScreen() {
-	const [refreshing, setRefreshing] = useState(false)
 	const queryClient = useQueryClient()
+	const [refreshing, setRefreshing] = useState(false)
 
 	const onRefresh = useCallback(async () => {
 		setRefreshing(true)

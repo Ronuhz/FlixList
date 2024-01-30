@@ -1,21 +1,16 @@
+import { useQuery } from '@tanstack/react-query'
+import axios from 'axios'
 import {
+	ActivityIndicator,
+	FlatList,
 	StyleSheet,
 	Text,
 	View,
-	Image,
-	ActivityIndicator,
-	FlatList,
 } from 'react-native'
-import { TMDBTvShows } from '../../../constants/types'
-import axios from 'axios'
+import { heightPercentageToDP as hp } from 'react-native-responsive-screen'
 import { colors, globalStyles, margins } from '../../../constants/styles'
-import {
-	widthPercentageToDP as wp,
-	heightPercentageToDP as hp,
-} from 'react-native-responsive-screen'
-import { getTVShowGenreById } from '../../../utils'
-import { Link } from 'expo-router'
-import { useQuery } from '@tanstack/react-query'
+import { TMDBTvShows } from '../../../constants/types'
+import SquareCard from './SquareCard'
 
 const fetchTvShows = async (signal: AbortSignal) => {
 	try {
@@ -60,41 +55,22 @@ function TvShows() {
 				data={data}
 				keyExtractor={(item: TMDBTvShows) => item.id.toString()}
 				contentContainerStyle={styles.flatListContainer}
-				renderItem={({ item, index }) => {
-					const title =
-						item.name.length > 15 ? item.name.slice(0, 15) + '...' : item.name
-
-					const convertedGenres = getTVShowGenreById(item.genre_ids)
-					const genres =
-						convertedGenres.length > 24
-							? convertedGenres.slice(0, 24) + '...'
-							: convertedGenres
-
-					return (
-						<Link
-							href={{
-								pathname: '/[id]',
-								params: {
-									id: item.id,
-									poster: item.backdrop_path ?? '',
-									type: 'tv',
-								},
-							}}
-						>
-							<View style={{ gap: 6 }}>
-								<Image
-									style={styles.coverImage}
-									resizeMode='cover'
-									source={{
-										uri: `https://image.tmdb.org/t/p/w500/${item.backdrop_path}`,
-									}}
-								/>
-								<Text style={styles.title}>{title}</Text>
-								<Text style={styles.genres}>{genres}</Text>
-							</View>
-						</Link>
-					)
-				}}
+				renderItem={({ item, index }) => (
+					<SquareCard
+						key={index}
+						href={{
+							pathname: '/[id]',
+							params: {
+								id: item.id,
+								poster: item.backdrop_path ?? '',
+								type: 'tv',
+							},
+						}}
+						backdrop_path={item.backdrop_path}
+						title={item.name}
+						genre_ids={item.genre_ids}
+					/>
+				)}
 			/>
 		</>
 	)

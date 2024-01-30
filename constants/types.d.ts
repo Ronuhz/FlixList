@@ -167,7 +167,7 @@ export type TMDBSeriesDetails = {
 	// Add more fields as needed
 }
 
-export type signUpError = {
+export type SignUpError = {
 	code: string
 	message: string
 	longMessage: string
@@ -180,4 +180,14 @@ export type signUpError = {
 			| 'code'
 			| 'password_confirm'
 	}
+}
+
+export type MediaCardProps = {
+	href: {
+		pathname: string
+		params: { id: number; poster: string; type: 'movie' | 'tv' }
+	}
+	title: string
+	backdrop_path: string
+	genre_ids: number[]
 }

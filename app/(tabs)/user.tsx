@@ -4,7 +4,7 @@ import { colors, globalStyles, margins } from '../../constants/styles'
 import { useEffect } from 'react'
 import { SignedIn, useUser } from '@clerk/clerk-expo'
 import { usePathname, router } from 'expo-router'
-import SignOutButton from '../../components/signOutButton'
+import SignOutButton from '../../components/SignOutButton'
 import {
 	heightPercentageToDP as hp,
 	widthPercentageToDP as wp,
@@ -66,6 +66,7 @@ export default function UserScreen() {
 							style={{ borderRadius: 60 }}
 						/>
 						<BlurView
+							tint='dark'
 							experimentalBlurMethod='dimezisBlurView'
 							style={styles.profilePictureEditContainer}
 						>

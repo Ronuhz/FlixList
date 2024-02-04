@@ -11,7 +11,7 @@ import {
 	QueryClientProvider,
 	useInfiniteQuery,
 } from '@tanstack/react-query'
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { SafeAreaView, StyleSheet, Text, View } from 'react-native'
 import { widthPercentageToDP as wp } from 'react-native-responsive-screen'
 import { colors, globalStyles, margins } from '../../constants/styles'

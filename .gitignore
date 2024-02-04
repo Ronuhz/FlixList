@@ -43,5 +43,4 @@ expo-env.d.ts
 
 .vscode/
 android/
-eas.json
 firebaseConfig.ts

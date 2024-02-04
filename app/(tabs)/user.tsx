@@ -1,17 +1,22 @@
-import { Text, StyleSheet, Image, View, Pressable } from 'react-native'
-import { SafeAreaView } from 'react-native-safe-area-context'
-import { colors, globalStyles, margins } from '../../constants/styles'
-import { useEffect } from 'react'
-import { SignedIn, useUser } from '@clerk/clerk-expo'
-import { usePathname, router } from 'expo-router'
-import SignOutButton from '../../components/SignOutButton'
-import {
-	heightPercentageToDP as hp,
-	widthPercentageToDP as wp,
-} from 'react-native-responsive-screen'
-import * as ImagePicker from 'expo-image-picker'
+import SignOutButton from '@/components/SignOutButton'
+import { db } from '@/firebaseConfig'
+import { SignedIn, useAuth, useUser } from '@clerk/clerk-expo'
 import { Feather } from '@expo/vector-icons'
 import { BlurView } from 'expo-blur'
+import * as ImagePicker from 'expo-image-picker'
+import { router, usePathname } from 'expo-router'
+import { collection, getDocs } from 'firebase/firestore'
+import { useEffect } from 'react'
+import {
+	Image,
+	Pressable,
+	SafeAreaView,
+	StyleSheet,
+	Text,
+	View,
+} from 'react-native'
+import { heightPercentageToDP as hp } from 'react-native-responsive-screen'
+import { colors, globalStyles, margins } from '../../constants/styles'
 
 export default function UserScreen() {
 	const { isLoaded, isSignedIn, user } = useUser()
@@ -46,6 +51,17 @@ export default function UserScreen() {
 		}
 	}
 
+	const addEntry = async () => {
+		try {
+			const listsSnapshot = await getDocs(collection(db, 'lists'))
+			listsSnapshot.forEach((doc) => console.log(doc.data()))
+		} catch (error) {
+			console.error(error)
+		}
+	}
+
+	const { getToken } = useAuth()
+
 	return (
 		<SafeAreaView style={styles.container}>
 			<SignedIn>
@@ -77,6 +93,13 @@ export default function UserScreen() {
 				</View>
 
 				<Text style={[globalStyles.sectionTitle, styles.myList]}>My List</Text>
+				<Pressable
+					onPress={async () => {
+						console.log(await getToken())
+					}}
+				>
+					<Text style={{ fontSize: 16, color: 'white' }}>Get token</Text>
+				</Pressable>
 			</SignedIn>
 		</SafeAreaView>
 	)
@@ -86,6 +109,7 @@ const styles = StyleSheet.create({
 	container: {
 		backgroundColor: colors.background,
 		flex: 1,
+		paddingTop: 20,
 	},
 	header: {
 		marginHorizontal: margins.side,

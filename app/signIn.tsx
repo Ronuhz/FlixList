@@ -65,7 +65,7 @@ const signIn = () => {
 			>
 				<Text style={styles.title}>Sign in</Text>
 				<Pressable
-					onPress={() => router.push('/(tabs)/')}
+					onPress={() => router.replace('/(tabs)/')}
 					style={{
 						backgroundColor: colors.mutedBackground,
 						borderRadius: 60,

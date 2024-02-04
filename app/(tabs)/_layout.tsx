@@ -1,7 +1,7 @@
+import { Entypo, FontAwesome } from '@expo/vector-icons'
 import { Tabs } from 'expo-router'
-import { FontAwesome, Entypo } from '@expo/vector-icons'
-import { colors } from '../../constants/styles'
 import { StatusBar } from 'expo-status-bar'
+import { colors } from '../../constants/styles'
 
 export default function TabLayout() {
 	return (

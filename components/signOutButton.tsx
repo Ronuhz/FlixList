@@ -9,13 +9,13 @@ const SignOutButton = () => {
 		return
 	}
 
+	const onSignOut = async () => {
+		signOut()
+		router.push('/(tabs)/')
+	}
+
 	return (
-		<Pressable
-			onPress={() => {
-				signOut()
-				router.push('/(tabs)/')
-			}}
-		>
+		<Pressable onPress={onSignOut}>
 			<Text style={{ color: 'red', fontSize: 24 }}>Sign out</Text>
 		</Pressable>
 	)

@@ -1,82 +1,80 @@
-import { Text, StyleSheet, Platform, SafeAreaView } from 'react-native'
-import { colors, globalStyles, margins } from '../../constants/styles'
-import { useState, useEffect } from 'react'
-import { IOMDBMovie } from '../../constants/types'
-import SearchBar from '../../components/screens/discover/SearchBar'
-import fetchSearchedMovies from '../../components/screens/discover/fetchSearchedMovies'
-import MasonryList from '@react-native-seoul/masonry-list'
-import MovieCard from '../../components/screens/discover/MovieCard'
-import { DiscoverContext } from '../../contexts/discover'
+import DiscoverSearch from '@/components/screens/discover/DiscoverSearch'
+import MasonryCard from '@/components/screens/discover/MasonryCard'
+import fetchSearch from '@/components/screens/discover/fetchSearch'
+import { Category } from '@/constants/types'
+import DiscoverContext from '@/contexts/discover'
+import { mergePages } from '@/utils'
+import { useReactQueryDevTools } from '@dev-plugins/react-query'
+import { MasonryFlashList } from '@shopify/flash-list'
 import {
-	widthPercentageToDP as wp,
-	heightPercentageToDP as hp,
-} from 'react-native-responsive-screen'
+	QueryClient,
+	QueryClientProvider,
+	useInfiniteQuery,
+} from '@tanstack/react-query'
+import { useState } from 'react'
+import { SafeAreaView, StyleSheet, Text, View } from 'react-native'
+import { widthPercentageToDP as wp } from 'react-native-responsive-screen'
+import { colors, globalStyles, margins } from '../../constants/styles'
 
-function DiscoverScreen() {
-	const [loading, setLoading] = useState(false)
-	const [page, setPage] = useState(2)
-	const [query, setQuery] = useState('')
-	const [movies, setMovies] = useState<IOMDBMovie[]>([])
-	const [category, setCategory] = useState('Movies')
-
-	const fetchMoreMovies = () => {
-		if (loading) return
-
-		setLoading(true)
-		fetchSearchedMovies(query, page, category).then((movies: IOMDBMovie[]) => {
-			setLoading(false)
-
-			if (!movies || movies.length === 0) return
-
-			setMovies((prev) => [...prev, ...movies])
-			setPage((prev) => prev + 1)
-		})
-	}
-
-	//reset page when changing category
-	useEffect(() => {
-		setPage(2)
-	}, [category])
+// Wraps the screen with the QueryClientProvider
+export default function Wrapper() {
+	const [queryClient] = useState(() => new QueryClient())
+	useReactQueryDevTools(queryClient)
 
 	return (
-		<DiscoverContext.Provider value={{ category, setCategory }}>
-			<SafeAreaView style={styles.container}>
-				<Text
-					style={[
-						globalStyles.sectionTitle,
-						{ width: wp(70), marginHorizontal: margins.side },
-					]}
-				>
-					Find Movies, Tv series, and more..
-				</Text>
-				<SearchBar query={query} setQuery={setQuery} setMovies={setMovies} />
+		<QueryClientProvider client={queryClient}>
+			<DiscoverScreen />
+		</QueryClientProvider>
+	)
+}
 
-				{movies && (
-					<MasonryList
-						data={movies}
-						numColumns={2}
-						showsVerticalScrollIndicator={false}
-						contentContainerStyle={styles.masonryListContainer}
-						renderItem={({ item, i }) => (
-							<MovieCard index={i} item={item as IOMDBMovie} />
-						)}
-						onEndReachedThreshold={0.1}
-						onEndReached={fetchMoreMovies}
-						refreshControl={false}
-					/>
-				)}
+// TODO: Implement category change functionality
+function DiscoverScreen() {
+	const [query, setQuery] = useState('')
+	const [category, setCategory] = useState<Category>('All')
+
+	const { data, fetchNextPage } = useInfiniteQuery({
+		queryKey: ['search', query, category],
+		queryFn: ({ pageParam = 1, signal }) =>
+			fetchSearch(query, pageParam, category, signal),
+		getNextPageParam: (lastPage, allPages, lastPageParam, allPageParams) =>
+			lastPage?.length ?? 0 > 0 ? lastPageParam + 1 : undefined,
+		initialPageParam: 1,
+	})
+
+	return (
+		<DiscoverContext.Provider
+			value={{ query, setQuery, category, setCategory }}
+		>
+			<SafeAreaView style={styles.container}>
+				<View style={styles.header}>
+					<Text style={[globalStyles.sectionTitle, { maxWidth: wp(70) }]}>
+						Find Movies, Tv series, and more...
+					</Text>
+					<DiscoverSearch />
+				</View>
+				<MasonryFlashList
+					data={mergePages(data)}
+					numColumns={2}
+					showsVerticalScrollIndicator={false}
+					estimatedItemSize={280}
+					contentContainerStyle={{ paddingHorizontal: margins.side }}
+					renderItem={({ item, index }) => (
+						<MasonryCard key={index} item={item} index={index} />
+					)}
+					onEndReachedThreshold={0.8}
+					onEndReached={fetchNextPage}
+				/>
 			</SafeAreaView>
 		</DiscoverContext.Provider>
 	)
 }
 
-export default DiscoverScreen
-
 const styles = StyleSheet.create({
 	container: {
-		flexGrow: 1,
+		flex: 1,
 		backgroundColor: colors.background,
-		marginTop: Platform.OS === 'android' ? 24 : 0,
+		paddingTop: 20,
 	},
-	masonryListContainer: { marginHorizontal: margins.side },
+	header: { paddingHorizontal: margins.side, marginBottom: 20 },
 })

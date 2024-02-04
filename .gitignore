@@ -40,3 +40,8 @@ yarn-error.*
 
 expo-env.d.ts
 # @end expo-cli
+
+.vscode/
+android/
+eas.json
+firebaseConfig.ts

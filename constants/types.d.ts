@@ -39,6 +39,30 @@ export type IOMDBMovie = {
 	imdbID: string
 }
 
+type TMDBSearch = {
+	adult: boolean
+	backdrop_path?: string | null
+	id: number
+	name?: string
+	original_language: string
+	original_name?: string
+	overview: string
+	poster_path?: string | null
+	media_type: 'tv' | 'person' | 'movie'
+	genre_ids: number[]
+	popularity: number
+	first_air_date?: string
+	vote_average: number
+	vote_count: number
+	origin_country?: string[]
+	release_date?: string
+	title?: string
+	known_for_department?: string
+	profile_path?: string | null
+	known_for?: MediaItem[]
+	video?: boolean
+}
+
 export type TMDBMovieDetails = {
 	adult: boolean
 	backdrop_path: string
@@ -191,3 +215,5 @@ export type MediaCardProps = {
 	backdrop_path: string
 	genre_ids: number[]
 }
+
+export type Category = 'All' | 'Movies' | 'Tv Series'

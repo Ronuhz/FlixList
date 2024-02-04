@@ -11,7 +11,6 @@ import { heightPercentageToDP as hp } from 'react-native-responsive-screen'
 import { globalStyles, margins } from '../../../constants/styles'
 import { IMovie } from '../../../constants/types'
 import HorizontalCard from './HorizontalCard'
-import { FlashList } from '@shopify/flash-list'
 
 const fetchPopularMovies = async (signal: AbortSignal) => {
 	try {

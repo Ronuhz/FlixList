@@ -1,11 +1,10 @@
-import { Stack } from 'expo-router'
+import { ClerkProvider } from '@clerk/clerk-expo'
+import { DarkTheme, ThemeProvider } from '@react-navigation/native'
 import { useFonts } from 'expo-font'
+import { Stack } from 'expo-router'
+import * as SecureStore from 'expo-secure-store'
 import * as SplashScreen from 'expo-splash-screen'
 import { useEffect } from 'react'
-import { DarkTheme, ThemeProvider } from '@react-navigation/native'
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { ClerkProvider } from '@clerk/clerk-expo'
-import * as SecureStore from 'expo-secure-store'
 import { Platform } from 'react-native'
 
 export {
@@ -40,8 +39,6 @@ export default function RootLayout() {
 	return <RootLayoutNav />
 }
 
-const queryClient = new QueryClient()
-
 const tokenCache = {
 	async getToken(key: string) {
 		try {
@@ -66,36 +63,34 @@ function RootLayoutNav() {
 			publishableKey={process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY!}
 		>
 			<ThemeProvider value={DarkTheme}>
-				<QueryClientProvider client={queryClient}>
-					<Stack>
-						<Stack.Screen
-							name='(tabs)'
-							options={{
-								headerShown: false,
-							}}
-						/>
-						<Stack.Screen
-							name='signUp'
-							options={{
-								presentation: 'modal',
-								headerShown: false,
-								gestureEnabled: false,
-								animation: Platform.OS === 'android' ? 'none' : 'default',
-							}}
-						/>
+				<Stack>
+					<Stack.Screen
+						name='(tabs)'
+						options={{
+							headerShown: false,
+						}}
+					/>
+					<Stack.Screen
+						name='signUp'
+						options={{
+							presentation: 'modal',
+							headerShown: false,
+							gestureEnabled: false,
+							animation: Platform.OS === 'android' ? 'none' : 'default',
+						}}
+					/>
 
-						<Stack.Screen
-							name='signIn'
-							options={{
-								presentation: 'modal',
-								headerShown: false,
-								gestureEnabled: false,
-								animation: Platform.OS === 'android' ? 'none' : 'default',
-							}}
-						/>
-						<Stack.Screen name='[id]' />
-					</Stack>
-				</QueryClientProvider>
+					<Stack.Screen
+						name='signIn'
+						options={{
+							presentation: 'modal',
+							headerShown: false,
+							gestureEnabled: false,
+							animation: Platform.OS === 'android' ? 'none' : 'default',
+						}}
+					/>
+					<Stack.Screen name='[id]' />
+				</Stack>
 			</ThemeProvider>
 		</ClerkProvider>
 	)

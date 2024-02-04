@@ -1,18 +1,18 @@
-import {
-	StyleSheet,
-	SafeAreaView,
-	RefreshControl,
-	ScrollView,
-} from 'react-native'
-import { colors } from '../../constants/styles'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { useCallback, useState } from 'react'
-import PopularMovies from '../../components/screens/home/PopularMovies'
-import { useQueryClient } from '@tanstack/react-query'
+import {
+	RefreshControl,
+	SafeAreaView,
+	ScrollView,
+	StyleSheet,
+} from 'react-native'
 import OnTheAirTvShows from '../../components/screens/home/OnTheAirTvShows'
+import PopularMovies from '../../components/screens/home/PopularMovies'
 import TvShows from '../../components/screens/home/TvShows'
+import { colors } from '../../constants/styles'
 
 export default function HomeScreen() {
-	const queryClient = useQueryClient()
+	const [queryClient] = useState(() => new QueryClient())
 	const [refreshing, setRefreshing] = useState(false)
 
 	const onRefresh = useCallback(async () => {
@@ -30,9 +30,11 @@ export default function HomeScreen() {
 					<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
 				}
 			>
-				<PopularMovies />
-				<OnTheAirTvShows />
-				<TvShows />
+				<QueryClientProvider client={queryClient}>
+					<PopularMovies />
+					<OnTheAirTvShows />
+					<TvShows />
+				</QueryClientProvider>
 			</ScrollView>
 		</SafeAreaView>
 	)

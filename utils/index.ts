@@ -1,3 +1,6 @@
+import { TMDBSearch } from '@/constants/types'
+import { InfiniteData } from '@tanstack/react-query'
+
 export function formatYear(year: string): string {
 	const yearRegex = /\b(\d{4})\b/g
 	const matches = year.match(yearRegex)
@@ -82,4 +85,28 @@ export function getTVShowGenreById(genreIds: number[]): string {
 	}
 
 	return genres.join(', ') // Combine the first 3 genres with commas
+}
+
+export function mergePages(
+	data: InfiniteData<TMDBSearch[] | undefined, unknown> | undefined
+): TMDBSearch[] {
+	if (!data) return []
+
+	const merged = data.pages.flatMap((page) => page ?? [])
+	const filtered = merged.filter(
+		(item) => item.media_type !== 'person' && item.poster_path
+	)
+
+	return removeDuplicateData(filtered)
+}
+
+export function removeDuplicateData(data: TMDBSearch[]) {
+	const uniqueData = data.reduce((accumulator: TMDBSearch[], currentItem) => {
+		if (accumulator.findIndex((item) => item.id === currentItem.id) === -1) {
+			accumulator.push(currentItem)
+		}
+		return accumulator
+	}, [] as TMDBSearch[])
+
+	return uniqueData
 }

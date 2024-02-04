@@ -103,7 +103,7 @@ const SignUpScreen = () => {
 					>
 						<Text style={styles.title}>Sign up</Text>
 						<Pressable
-							onPress={() => router.push('/(tabs)/')}
+							onPress={() => router.replace('/(tabs)/')}
 							style={{
 								backgroundColor: colors.mutedBackground,
 								borderRadius: 60,
